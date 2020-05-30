@@ -4,9 +4,9 @@
 #include <ESP32Servo.h>
 #include <HTTPClient.h>
 
+// wifiのssidとパスワードを定義
 const char *ssid = "***********";
 const char *password = "*********";
-int flag = 1;
 const char html[] = "<!DOCTYPE html><html lang='ja'><head><meta charset='UTF-8'></head>\
 <body>not Browser Access</body></html>";
 HTTPClient http;
@@ -20,6 +20,7 @@ WebServer server(80);
 void setup()
 {
   Serial.begin(115200);
+  // sg90サーボをセット
   servo.attach(15, 500, 2400);
   delay(10);
   WiFi.begin(ssid, password);
@@ -34,8 +35,11 @@ void setup()
   Serial.println("WiFi connected.");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  // ルートアクセス時の挙動を定義
   server.on("/", handleRoot);
+  //　サーバ起動
   server.begin();
+  // タッチセンサにハンドラを追加
   touchAttachInterrupt(T6, touchHandler, threshold);
 }
 
@@ -70,5 +74,6 @@ void moveServo()
   servo.write(10);
   delay(300);
   Serial.println("On Servo Motor ");
+  // ハンドラの呼ばれるタイミング調整用
   touchdetected = false;
 }
